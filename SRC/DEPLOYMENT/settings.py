@@ -8,26 +8,38 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
-"""
 
+"""
+import os
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+TEMPLATES_DIR=BASE_DIR /'templates'
+TEMPLATES_DIR.mkdir(parents=True,exist_ok=True)
+print(TEMPLATES_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tr)befn-uq9a-#-@w&19(s7$3b(km-2)krt99)g0f6v^l7udp%'
+SECRET_KEY =str(os.environ.get('DJANGO_SECRET_KEY',default=get_random_secret_key()))
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
+DEBUG = os.environ.get('DJANGO_DEBUG',default=False)
+ALLOWED_HOSTS = [
+    '.railway.app'
+]
+if DEBUG:
+   ALLOWED_HOSTS+=[
+        '127.0.0.1',
+        'localhost'
+    ]
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,7 +68,7 @@ ROOT_URLCONF = 'DEPLOYMENT.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
