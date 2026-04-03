@@ -32,10 +32,11 @@ virtualenv==20.35.4
  dj-database-url
  gunicorn
  requests
- whitenoise
+ whitenoise[brotli]
  django-allauth[socialaccount]
  django-allauth-ui
  django-widget-tweaks
  slippers
  stripe
  
+django-storages

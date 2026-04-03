@@ -12,6 +12,7 @@ dependencies = [
     "django==6.0",
     "django-allauth-ui>=1.8.1",
     "django-allauth[socialaccount]>=65.13.1",
+    "django-storages>=1.14.6",
     "django-widget-tweaks>=1.5.1",
     "dotenv>=0.9.9",
     "filelock==3.20.2",
@@ -29,5 +30,5 @@ dependencies = [
     "stripe>=14.3.0",
     "tzdata==2025.3 ; sys_platform == 'win32'",
     "virtualenv==20.35.4",
-    "whitenoise>=6.11.0",
+    "whitenoise[brotli]>=6.11.0",
 ]

@@ -52,8 +52,17 @@ INSTALLED_APPS = [
 #internal apps
      'TESTAPP',
      'Commando',
+
+     
 ]
 
+if DEBUG:
+  INSTALLED_APPS.append(
+    # ...
+    "whitenoise.runserver_nostatic",
+    "django.contrib.staticfiles",
+    # ...
+  )
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -62,6 +71,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+     # ...Whitenoise middleware
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # ...
 ]
 
 ROOT_URLCONF = 'DEPLOYMENT.urls'
@@ -139,4 +153,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT=''
+STATIC_ROOT=BASE_DIR /'static_root'
+
+STATIC_ROOT.mkdir(exist_ok=True,parents=True)
+STATIC_FILES_DIR=[
+  BASE_DIR /'static_files'
+]
+
+#Whitenoise brotli file compression
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
