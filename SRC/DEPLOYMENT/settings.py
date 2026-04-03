@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 #internal apps
      'TESTAPP',
+     'Commando',
 ]
 
 MIDDLEWARE = [
@@ -93,7 +94,7 @@ DATABASES = {
     }
 }
 
-DATABASE_URL=str(os.environ.get('POSTGRESS_TEST_PUBLIC_URL'))
+DATABASE_URL=str(os.environ.get('DATABASE_URL'))
 if DATABASE_URL:
    import dj_database_url
    if DATABASE_URL.startswith('postgresql://postgres'):
@@ -138,3 +139,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT=''

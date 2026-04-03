@@ -261,7 +261,7 @@ requires-dist = [
     { name = "platformdirs", specifier = "==4.5.1" },
     { name = "pre-commit", specifier = "==4.5.1" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.2" },
-    { name = "python-decouple", specifier = ">=3.8" },
+    { name = "python-decouple", specifier = "==3.8" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "slippers", specifier = ">=0.6.2" },

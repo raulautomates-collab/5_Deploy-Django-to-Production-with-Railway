@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Character Picker</title>
+    <style>
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://assets.codepen.io/36869/MinecraftTen-VGORe.woff') format('woff');
+        }
+
+        @layer reset {
+            :root {
+                font-family: "Minecraft", sans-serif;
+                font-optical-sizing: auto;
+                line-height: 1.5;
+                font-weight: 400;
+                font-synthesis: none;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
+            * {
+                margin: 0;
+            }
+
+            @media (prefers-reduced-motion: no-preference) {
+                html {
+                    interpolate-size: allow-keywords;
+                }
+            }
+
+            body {
+                min-height: 100vh;
+                line-height: 1.5;
+                -webkit-font-smoothing: antialiased;
+                display: grid;
+                place-content: center;
+                background-color: #333;
+                padding: 1rem;
+            }
+
+            ul {
+                padding: 0;
+                list-style: none;
+            }
+        }
+
+        @layer main {
+            @property --sprite-fs {
+                syntax: "<integer>";
+                initial-value: 0;
+                inherits: false
+            }
+
+            :root {
+                --sprite-ad: normal;
+                --sprite-af: none;
+                --sprite-ap: running;
+                --sprite-ai: infinite;
+                --sprite-at: linear;
+                --sprite-fr: 48;
+
+                --image-1: url(https://assets.codepen.io/36869/cat.webp);
+                --image-2: url(https://assets.codepen.io/36869/spider.webp);
+                --image-3: url(https://assets.codepen.io/36869/cow.webp);
+                --image-4: url(https://assets.codepen.io/36869/creeper.webp);
+                --image-5: url(https://assets.codepen.io/36869/enderman.webp);
+                --image-6: url(https://assets.codepen.io/36869/evoker.webp);
+                --image-7: url(https://assets.codepen.io/36869/golem.webp);
+                --image-8: url(https://assets.codepen.io/36869/horse.webp);
+                --image-9: url(https://assets.codepen.io/36869/ocelot.webp);
+                --image-10: url(https://assets.codepen.io/36869/panda.webp);
+                --image-11: url(https://assets.codepen.io/36869/skeleton.webp);
+                --image-12: url(https://assets.codepen.io/36869/wolf.webp);
+                --image-13: url(https://assets.codepen.io/36869/squid.webp);
+                --image-14: url(https://assets.codepen.io/36869/fox.webp);
+                --image-15: url(https://assets.codepen.io/36869/villager.webp);
+
+                --characater-1: 'Cat';
+                --characater-2: 'Spider';
+                --characater-3: 'Cow';
+                --characater-4: 'Creeper';
+                --characater-5: 'Enderman';
+                --characater-6: 'Evoker';
+                --characater-7: 'Steel golem';
+                --characater-8: 'Skeleton horse';
+                --characater-9: 'Ocelot';
+                --characater-10: 'Panda';
+                --characater-11: 'Skeleton';
+                --characater-12: 'Wolf';
+                --characater-13: 'Squid';
+                --characater-14: 'Fox';
+                --characater-15: 'Villager';
+            }
+        }
+
+        #app {
+            display: grid;
+            gap: 1rem;
+        }
+
+        #app header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #app header h1 {
+            --color: black;
+            --shadow-width: 2px;
+            --shadow-width-negative: calc(2px * -1);
+            color: white;
+            font-size: clamp(1.25rem, 0.875rem + 2vw, 2rem);
+            text-shadow: 0 var(--shadow-width) 0 var(--color),
+                var(--shadow-width) 0 0 var(--color),
+                var(--shadow-width) var(--shadow-width) 0 var(--color),
+                var(--shadow-width-negative) var(--shadow-width-negative) 0 var(--color),
+                var(--shadow-width) var(--shadow-width-negative) 0 var(--color),
+                var(--shadow-width-negative) var(--shadow-width) 0 var(--color);
+        }
+
+        #app header > div {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            opacity: .5;
+        }
+
+        #app header > div small {
+            color: white;
+            width: 10rem;
+            text-align: right;
+        }
+
+        #app header kbd {
+            border: 2px solid #5e5e5e;
+            box-shadow: 6px 6px #222222;
+            font-size: 1.25rem;
+            font-weight: 600;
+            white-space: nowrap;
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+
+        #app main {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr auto;
+        }
+
+        div.characters {
+            display: grid;
+            gap: .5rem;
+            grid-template-columns: repeat(5, minmax(110px, 1fr));
+            grid-template-rows: repeat(3, 160px);
+            padding: .5rem;
+            background-color: black;
+            box-shadow: 6px 6px #222222;
+            border: 2px solid #999999;
+        }
+
+        div.characters > div {
+            position: relative;
+            background-color: #181818;
+            overflow: hidden;
+            display: grid;
+            place-items: center;
+        }
+
+        div.characters > div:has(input:checked) {
+            overflow: visible;
+            background-color: #4c8ee1;
+        }
+
+        div.characters > div:has(input:checked) .character > img {
+            scale: 1.2;
+            opacity: 1;
+            --color: #ffda0e;
+        }
+
+        div.characters input {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            appearance: none;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        div.characters input:checked {
+            outline: 0;
+            border: 6px double black;
+        }
+
+        div.characters .character img {
+            max-width: 70px;
+            max-height: 70px;
+            transition: scale 0.2s ease;
+            opacity: .75;
+            --color: white;
+            filter: drop-shadow(0px 1px 0px var(--color)) drop-shadow(-1px 0px 0px var(--color)) drop-shadow(1px 0px 0px var(--color)) drop-shadow(0px 1px 0px var(--color)) drop-shadow(0px -1px 0px var(--color)) drop-shadow(1px 0px 0px var(--color));
+        }
+
+        /* Preview Area Logics */
+        .characters:has(div:nth-child(1) > input:checked) + .preview { --name: var(--characater-1); }
+        .characters:has(div:nth-child(1) > input:checked) + .preview .preview-container { --sprite-image: var(--image-1); --sprite-c: 5; --sprite-h: 5364; --sprite-w: 2980; --sprite-f: 42; --sprite-fe: 41; }
+        
+        .characters:has(div:nth-child(2) > input:checked) + .preview { --name: var(--characater-2); }
+        .characters:has(div:nth-child(2) > input:checked) + .preview .preview-container { --sprite-image: var(--image-2); --sprite-c: 5; --sprite-h: 3576; --sprite-w: 2980; --sprite-f: 28; --sprite-fe: 27; }
+
+        .characters:has(div:nth-child(3) > input:checked) + .preview { --name: var(--characater-3); }
+        .characters:has(div:nth-child(3) > input:checked) + .preview .preview-container { --sprite-image: var(--image-3); --sprite-c: 5; --sprite-h: 7152; --sprite-w: 2980; --sprite-f: 60; --sprite-fe: 59; }
+
+        .characters:has(div:nth-child(4) > input:checked) + .preview { --name: var(--characater-4); }
+        .characters:has(div:nth-child(4) > input:checked) + .preview .preview-container { --sprite-image: var(--image-4); --sprite-c: 5; --sprite-h: 6556; --sprite-w: 2980; --sprite-f: 55; --sprite-fe: 54; }
+
+        .characters:has(div:nth-child(5) > input:checked) + .preview { --name: var(--characater-5); }
+        .characters:has(div:nth-child(5) > input:checked) + .preview .preview-container { --sprite-image: var(--image-5); --sprite-c: 5; --sprite-h: 6556; --sprite-w: 2980; --sprite-f: 55; --sprite-fe: 54; }
+
+        .characters:has(div:nth-child(6) > input:checked) + .preview { --name: var(--characater-6); }
+        .characters:has(div:nth-child(6) > input:checked) + .preview .preview-container { --sprite-image: var(--image-6); --sprite-c: 5; --sprite-h: 11920; --sprite-w: 2980; --sprite-f: 99; --sprite-fe: 98; }
+
+        .characters:has(div:nth-child(7) > input:checked) + .preview { --name: var(--characater-7); }
+        .characters:has(div:nth-child(7) > input:checked) + .preview .preview-container { --sprite-image: var(--image-7); --sprite-c: 5; --sprite-h: 8940; --sprite-w: 2980; --sprite-f: 72; --sprite-fe: 71; }
+
+        .characters:has(div:nth-child(8) > input:checked) + .preview { --name: var(--characater-8); }
+        .characters:has(div:nth-child(8) > input:checked) + .preview .preview-container { --sprite-image: var(--image-8); --sprite-c: 5; --sprite-h: 5960; --sprite-w: 2980; --sprite-f: 47; --sprite-fe: 46; }
+
+        .characters:has(div:nth-child(9) > input:checked) + .preview { --name: var(--characater-9); }
+        .characters:has(div:nth-child(9) > input:checked) + .preview .preview-container { --sprite-image: var(--image-9); --sprite-c: 5; --sprite-h: 4768; --sprite-w: 2980; --sprite-f: 37; --sprite-fe: 36; }
+
+        .characters:has(div:nth-child(10) > input:checked) + .preview { --name: var(--characater-10); }
+        .characters:has(div:nth-child(10) > input:checked) + .preview .preview-container { --sprite-image: var(--image-10); --sprite-c: 5; --sprite-h: 10728; --sprite-w: 2980; --sprite-f: 88; --sprite-fe: 87; }
+
+        .characters:has(div:nth-child(11) > input:checked) + .preview { --name: var(--characater-11); }
+        .characters:has(div:nth-child(11) > input:checked) + .preview .preview-container { --sprite-image: var(--image-11); --sprite-c: 5; --sprite-h: 7748; --sprite-w: 2980; --sprite-f: 65; --sprite-fe: 64; }
+
+        .characters:has(div:nth-child(12) > input:checked) + .preview { --name: var(--characater-12); }
+        .characters:has(div:nth-child(12) > input:checked) + .preview .preview-container { --sprite-image: var(--image-12); --sprite-c: 5; --sprite-h: 7152; --sprite-w: 2980; --sprite-f: 58; --sprite-fe: 57; }
+
+        .characters:has(div:nth-child(13) > input:checked) + .preview { --name: var(--characater-13); }
+        .characters:has(div:nth-child(13) > input:checked) + .preview .preview-container { --sprite-image: var(--image-13); --sprite-c: 5; --sprite-h: 12516; --sprite-w: 2980; --sprite-f: 104; --sprite-fe: 103; }
+
+        .characters:has(div:nth-child(14) > input:checked) + .preview { --name: var(--characater-14); }
+        .characters:has(div:nth-child(14) > input:checked) + .preview .preview-container { --sprite-image: var(--image-14); --sprite-c: 5; --sprite-h: 8344; --sprite-w: 2980; --sprite-f: 69; --sprite-fe: 68; }
+
+        .characters:has(div:nth-child(15) > input:checked) + .preview { --name: var(--characater-15); }
+        .characters:has(div:nth-child(15) > input:checked) + .preview .preview-container { --sprite-image: var(--image-15); --sprite-c: 5; --sprite-h: 4768; --sprite-w: 2980; --sprite-f: 37; --sprite-fe: 36; }
+
+        div.preview {
+            display: grid;
+            position: relative;
+            grid-template-rows: auto 1fr;
+            place-items: center;
+            gap: .5rem;
+            padding: .5rem;
+            background-color: black;
+            border: 2px solid #4c8ee1;
+            box-shadow: 6px 6px #222222;
+            user-select: none;
+        }
+
+        div.preview:before {
+            content: var(--name);
+            background: #adcbf1;
+            position: relative;
+            width: 100%;
+            text-align: center;
+            line-height: 2.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .preview-container {
+            height: 100%;
+            width: 100%;
+            display: grid;
+            gap: .5rem;
+            place-items: center;
+            place-content: center;
+            grid-template-rows: 1fr auto;
+            counter-reset: num var(--sprite-cf) col var(--sprite-cc) row var(--sprite-cr);
+            --sprite-tw: 260;
+            --sprite-r: round(up, calc(var(--sprite-f) / var(--sprite-c)), 1);
+            --sprite-sw: calc(var(--sprite-w) / var(--sprite-c));
+            --sprite-ar: calc(var(--sprite-tw) / var(--sprite-sw));
+            --sprite-uh: calc(var(--sprite-h) * var(--sprite-ar));
+            --sprite-uw: calc(var(--sprite-w) * var(--sprite-ar));
+            --sprite-th: calc(var(--sprite-uh) / var(--sprite-r));
+            --sprite-as: calc(var(--sprite-f) / var(--sprite-fr) * 1s);
+            --sprite-cf: calc(var(--sprite-fs) + 1);
+            --sprite-cc: calc(mod(var(--sprite-fs), var(--sprite-c)) + 1);
+            --sprite-cr: calc(round(down, calc(calc(var(--sprite-tw) * var(--sprite-fs)) / var(--sprite-uw)), 1) + 1);
+            --row: calc(round(down, calc(calc(var(--sprite-tw) * var(--sprite-fs)) / var(--sprite-uw)), 1) * var(--sprite-th));
+            --col: mod(calc(var(--sprite-tw) * var(--sprite-fs)), var(--sprite-uw));
+            animation: frame var(--sprite-as) var(--sprite-at) 0s var(--sprite-ai) var(--sprite-ad) var(--sprite-af) var(--sprite-ap);
+        }
+
+        .sprite-container {
+            position: relative;
+            z-index: 1;
+            background-color: white;
+            height: 100%;
+        }
+
+        .sprite-container:has(> div input[type="radio"]:nth-child(2):checked) .sprite {
+            scale: -1 1;
+        }
+
+        .sprite-direction {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            display: flex;
+        }
+
+        .sprite-direction input {
+            appearance: none;
+            width: 26px;
+            height: 28px;
+        }
+
+        .sprite-direction input:before {
+            font-size: 1.25rem;
+            opacity: .25;
+            cursor: pointer;
+        }
+
+        .sprite-direction input:checked:before {
+            opacity: .5;
+        }
+
+        .sprite-direction input:first-child:before { content: "◀️"; }
+        .sprite-direction input:last-child:before { content: "▶️"; }
+
+        .sprite {
+            top: 50%;
+            position: relative;
+            translate: 0 -50%;
+            filter: drop-shadow(2px 4px 6px black);
+            height: calc(1px * var(--sprite-th));
+            width: calc(1px * var(--sprite-tw));
+            background-image: var(--sprite-image);
+            background-size: calc(1px * var(--sprite-uw)) calc(1px * var(--sprite-uh));
+            background-position: calc(-1px * var(--col)) calc(-1px * var(--row));
+            transition: scale 0.2s ease;
+        }
+
+        .sprite-stats {
+            background: #adcbf1;
+            width: 100%;
+            padding: .5rem;
+        }
+
+        .sprite-stats dl {
+            display: grid;
+            grid-template-columns: 1fr auto;
+        }
+
+        .sprite-stats dd {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .sprite-stats dd.sprite-tw:before { content: counter(num) '/' counter(variable); counter-reset: variable var(--sprite-f); }
+        .sprite-stats dd.sprite-cc:before { content: counter(col) '/' counter(variable); counter-reset: variable var(--sprite-c); }
+        .sprite-stats dd.sprite-cr:before { content: counter(row) '/' counter(variable); counter-reset: variable var(--sprite-r); }
+
+        @keyframes frame { to { --sprite-fs: var(--sprite-fe); } }
+
+        /* Media Queries */
+        @media (width < 940px) {
+            #app main .characters { grid-template-columns: repeat(3, minmax(110px, 1fr)); grid-template-rows: repeat(5, 160px); }
+            #app main .preview { position: sticky; top: .5rem; }
+            #app main .preview .preview-container { --sprite-tw: 220; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Pick your character</h1>
+            <div class="additional">
+                <small>support keyboard arrows (while focus)</small>
+                <kbd>←</kbd>
+                <kbd>→</kbd>
+            </div>
+        </header>
+        <main class="container">
+            <div class="characters">
+                <div>
+                    <input type="radio" name="character" id="character-1" aria-hidden="true" tabindex="1" checked autofocus/>
+                    <label for="character-1" class="character">
+                        <img src="https://assets.codepen.io/36869/cat-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-2" aria-hidden="true"/>
+                    <label for="character-2" class="character">
+                        <img src="https://assets.codepen.io/36869/spider-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-3" aria-hidden="true"/>
+                    <label for="character-3" class="character">
+                        <img src="https://assets.codepen.io/36869/cow-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-4" aria-hidden="true"/>
+                    <label for="character-4" class="character">
+                        <img src="https://assets.codepen.io/36869/creeper-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-5" aria-hidden="true"/>
+                    <label for="character-5" class="character">
+                        <img src="https://assets.codepen.io/36869/enderman-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-6" aria-hidden="true"/>
+                    <label for="character-6" class="character">
+                        <img src="https://assets.codepen.io/36869/evoker-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-7" aria-hidden="true"/>
+                    <label for="character-7" class="character">
+                        <img src="https://assets.codepen.io/36869/golem-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-8" aria-hidden="true"/>
+                    <label for="character-8" class="character">
+                        <img src="https://assets.codepen.io/36869/horse-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-9" aria-hidden="true"/>
+                    <label for="character-9" class="character">
+                        <img src="https://assets.codepen.io/36869/ocelot-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-10" aria-hidden="true"/>
+                    <label for="character-10" class="character">
+                        <img src="https://assets.codepen.io/36869/panda-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-11" aria-hidden="true"/>
+                    <label for="character-11" class="character">
+                        <img src="https://assets.codepen.io/36869/skeleton-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-12" aria-hidden="true"/>
+                    <label for="character-12" class="character">
+                        <img src="https://assets.codepen.io/36869/wolf-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-13" aria-hidden="true"/>
+                    <label for="character-13" class="character">
+                        <img src="https://assets.codepen.io/36869/squid-preview.png" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-14" aria-hidden="true"/>
+                    <label for="character-14" class="character">
+                        <img src="https://assets.codepen.io/36869/fox-preview.webp" alt="">
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" name="character" id="character-15" aria-hidden="true"/>
+                    <label for="character-15" class="character">
+                        <img src="https://assets.codepen.io/36869/villager-preview.webp" alt="">
+                    </label>
+                </div>
+            </div>
+
+            <div class="preview">
+                <div class="preview-container">
+                    <div class="sprite-container">
+                        <div class="sprite"></div>
+                        <div class="sprite-direction">
+                            <input type="radio" name="direction" checked>
+                            <input type="radio" name="direction">
+                        </div>
+                    </div>
+                    <div class="sprite-stats">
+                        <dl>
+                            <dt>Current frame:</dt>
+                            <dd class="sprite-tw"></dd>
+                            <dt>Current col:</dt>
+                            <dd class="sprite-cc"></dd>
+                            <dt>Current row:</dt>
+                            <dd class="sprite-cr"></dd>
+                            <dt>
+                                <label for="select-fps">FPS:</label>
+                            </dt>
+                            <dd class="sprite-fps">
+                                <select id="select-fps">
+                                    <option value="12">12</option>
+                                    <option value="24">24</option>
+                                    <option value="48" selected>48</option>
+                                    <option value="64">64</option>
+                                    <option value="76">76</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <small style="color: hsl(0deg 0% 100% / 50%);">Support mobile devices</small>
+        </footer>
+    </div>
+</body>
+</html>
