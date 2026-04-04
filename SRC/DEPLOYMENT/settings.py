@@ -23,6 +23,25 @@ TEMPLATES_DIR=BASE_DIR /'templates'
 TEMPLATES_DIR.mkdir(parents=True,exist_ok=True)
 print(TEMPLATES_DIR)
 
+
+
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', default='587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', default='True')
+#EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', default='False') 
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', default=None)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', default=None)
+
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'raulautomates@gmail.com')
+SERVER_EMAIL = os.environ.get('EMAIL_HOST_USER', 'raulautomates@gmail.com')
+
+# Email admins for sending emails
+ADMINS = [('dominic','dominicomondi747@gamil.com')]
+MANAGERS = ADMINS
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 

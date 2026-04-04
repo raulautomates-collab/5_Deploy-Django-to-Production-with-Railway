@@ -10,3 +10,6 @@ def home_view(request):
 
 def health_view(request):
     return HttpResponse('SUCCESFUL')
+
+def funview(request):
+    return render(request,'fun.html')
